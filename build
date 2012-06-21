@@ -1,0 +1,6 @@
+#!/bin/sh
+./node_modules/.bin/uglifyjs static/js/guide.js > static/js/guide.min.js 
+./node_modules/.bin/uglifyjs static/js/page.js > static/js/page.min.js 
+./node_modules/.bin/uglifyjs static/js/supergrep.js > static/js/supergrep.min.js 
+
+

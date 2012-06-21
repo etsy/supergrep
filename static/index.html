@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>Supergrep++</title>
+
+        <link rel="stylesheet" type="text/css" href="/css/page.css" />
+        <link rel="stylesheet" type="text/css" href="/css/redmond/jquery-ui-1.8.16.custom.css" />
+        <link rel="stylesheet" type="text/css" href="/css/guiders-1.2.0.css" />
+
+        <script src="/socket.io/socket.io.js" type="text/javascript"></script>
+        <script src="/js/all.jsc" type="text/javascript"></script>
+
+    </head>
+
+    <body>
+
+        <header>
+            <div id="view-options" class="display-option-group">
+                <label class="display-option" for="autoscroll">Autoscroll: <input id="autoscroll" type="checkbox" tabindex="160" checked></label>
+                <label class="display-option" for="wrap-lines">Wrap lines: <input id="wrap-lines" type="checkbox" tabindex="170"></label>
+                <label class="display-option" for="sort-order">Reverse sort: <input id="sort-order" type="checkbox" tabindex="180"></label>
+                <label class="display-option" for="max-entries">Max entries: <input id="max-entries" type="text" value="" tabindex="190"></label>
+            </div>
+
+            <div id="logsource-options" class="display-option-group">
+                <label class="display-option" for="log-web">Web: <input id="log-web" class="log-option" type="checkbox" data-log="web" tabindex="120" checked></label>
+                <!-- you can add more here -->
+            </div>
+
+            <div id="filter-options" class="display-option-group">
+                <label class="display-option" for="filter-log">
+                    <a id="clear-field-filter" class="clear-field" href="#">[X]</a>
+                    Filter
+                    <a id="filter-rule-help" class="help rule-help" href="#">[?]</a>
+                    <span id="filter-invert"><input id="filter-invert-option" type="checkbox" />Invert</span>
+                    <br/>
+                    <textarea id="filter-log" tabindex="110"></textarea>
+                </label>
+            </div>
+
+            <div id="highlight-options" class="display-option-group">
+                <label class="display-option" for="highlight-log"><a id="clear-field-highlight" class="clear-field" href="#">[X]</a> Highlight <a id="highlight-rule-help" class="help rule-help" href="#">[?]</a><br/><textarea id="highlight-log" tabindex="100"></textarea></label>
+            </div>
+
+            <div class="config-profiles">Config Profiles</div>
+
+            <a id="clear-log" class="help-buttons" href="#">Clear Log</a>
+            <a id="legend-help" class="help-buttons" href="#">Legend</a>
+            <a id="guide-help" class="help-buttons" href="#">Guide</a>
+
+            <h1 class='title'>&#8747;upergrep++</h1>
+
+        </header>
+
+        <div id="results">
+
+            <h1 id="loading">Connecting...</h1>
+
+            <ul id="results-list"></ul>
+
+            <div id="review-bucket" class="empty">
+                <ul></ul>
+                <header><h2 class='title'>Review Bucket</h2></header>
+            </div>
+        </div>
+
+        <form id='gistform' method='post' action='https://gist.github.com/gists' target='_blank'>
+            <input type='hidden' id="gistform-filename" name='file_name[gistfile1]' value=''>
+            <input type='hidden' name='file_ext[gistfile1]' value='.txt'>
+            <textarea id="gistform-data" name='file_contents[gistfile1]' editable='true' html='true'></textarea>
+        </form>
+
+        <div id="rule-help-dialog" title="Highlight/Filter Rules">
+            <p>Rules can be either lists of strings to match or regular expressions.</p>
+            <p>A list consists of one or more strings separated by commas and/or new lines (CR/LF). Matching is case insensitive and terms are ORed together. Some examples:</p>
+            <p class="code">parse, fatal, exception</p>
+            <p class="code">parse
+fatal
+exception</p>
+            <p class="code">parse
+fatal, last</p>
+
+            <p>Regular expressions are recognized by the format <u>/expression/[options]</u>. Some examples:</p>
+            <p class="code">/(parse|fatal|exception)/</p>
+            <p class="code">/php\s+fatal/i</p>
+            <p class="code">/\.php\((\d+)\)$/i</p>
+
+            <p>For the filter rules, the default behavior is to hide log entries that match the filter rules. If the "Inverted" option is checked, then only those log entries that match the filter rules will be shown.</p>
+        </div>
+
+        <div id="legend-dialog" title="Log Legend">
+            <div>
+                <p>
+                    <h1>Elements of a log entry</h1>
+                    <img src="/img/parts.jpg" />
+                    <ul>
+                        <li>1. Server</li>
+                        <li>2. Timestamp</li>
+                        <li>3. Log level</li>
+                        <li>4. IP Address</li>
+                    </ul>
+                    <ul>
+                        <li>5. Unique ID (for Splunk)</li>
+                        <li>6. Namespace</li>
+                        <li>7. File/Line (source of log entry)</li>
+                        <li>8. User ID</li>
+                    </ul>
+                    <ul>
+                        <li>9. Link to raw log entry</li>
+                        <li>10. Link to callstack</li>
+                        <li>11. Log message</li>
+                    </ul>
+                </p>
+                <p>
+                    <h1>PHP Fatal</h1>
+                    <img src="/img/fatal.jpg" />
+                </p>
+                <p>
+                    <h1>Uncaught Exception</h1>
+                    <img src="/img/exception.jpg" />
+                </p>
+                <p>
+                    <h1>PHP Error</h1>
+                    <img src="/img/error.jpg" />
+                </p>
+                <p>
+                    <h1>PHP Warning</h1>
+                    <img src="/img/warn.jpg" />
+                </p>
+                <p>
+                    <h1>PHP Info</h1>
+                    <img src="/img/info.jpg" />
+                </p>
+                <p>
+                    <h1>Uncategorized</h1>
+                    <img src="/img/uncat.jpg" />
+                </p>
+                <p>
+                    <h1>Highlighted</h1>
+                    <img src="/img/highlight.jpg" />
+                </p>
+            </div>
+        </div>
+
+        <div id="export-help-dialog" title="Exporting Data">
+            <p>Raw logs and stack traces can be exported to either a gist or IRC (via irccat)</p>
+            <p>Sending log data to a gist is as simple as clicking the [GIST] link.</p>
+            <p>Exporting to IRC consists of clicking the [IRC] link and then entering the channel or nick to send the data to. To specify a channel, use the format <tt>#channel</tt>:</p>
+            <p class="code">#push
+#hardware
+#etsy</p>
+            <p>To specify a nick, use the format <tt>@nick</tt>:</p>
+            <p class="code">@irccat
+@dottie</p>
+            <p>In addition to the channel/nick, you can also add a note, which will be displayed above the log data. Some examples:</p>
+            <p class="code">@milo Was this you?
+#etsy LOL, wut?</p>
+        </div>
+
+        <script id="tpl_msgEntry" type="text/html">
+            <li id="<%= data.id %>" class="log msg">
+                <%= data.data %>
+            </li>
+        </script>
+
+        <script id="tpl_exportHelpLink" type="text/html">
+            <a class="export-help" onclick="$('#export-help-dialog').dialog({ autoOpen: true, width: 600, buttons: { 'Ok': function() { $(this).dialog('close'); } } }); return false;" href="#">[?]</a>
+        </script>
+
+        <script id="tpl_gistLink" type="text/html">
+            <a class="gist" onclick="Etsy.Supergrep.submitGist('<%= data.ns %>', <%= data.timestamp %>, <%= data.data %>); return false;" href="#">[Gist]</a>
+        </script>
+
+        <script id="tpl_ircLink" type="text/html">
+            <a class="irc" onclick="Etsy.Supergrep.submitIrc(prompt('Enter the @nick or #channel to send to', '#push'), <%= data.data %>); return false;" href="#">[IRC]</a>
+        </script>
+
+        <script id="tpl_logEntry" type="text/html">
+            <li id="<%= data.id %>" class="log<% if (data.ns) { print(' ' + data.ns); } %><% if (data.severity) { print(' ' + data.severity); } %><% if (data.isFatal) { print(' fatal'); } %>">
+                <% if (data.server) { %>
+                    <%= data.server %>
+                    [<%= data.timestamp.format('m/d HH:MM:ss') %>]
+                    <span class="severity <%= data.severity %>"><%= data.severity %></span>
+                    [<%= data.client %>]
+                    <% if (data.token) { %>
+                        [<a target="_blank" href="https://splunk.yourdomain.com/en-US/app/search/flashtimeline?auto_pause=true&q=search%20source=%22//syslog/your/error.log%22%20your_request_uuid=%22<%= data.token %>%22%20earliest=%22-15m@m%22%20latest=%22now%22"><%= data.token %></a>]
+                    <% } %>
+                    <% if (data.namespace) { %>
+                        <span class="namespace<% if (data.namespace.toLowerCase() === 'exception') { print(' exception'); } %>">[<%= data.namespace.toUpperCase() %>]</span>
+                    <% } %>
+                    <% if (data.path && data.path.file) { %>
+                        <span class="path">[<a target="_blank" href="<%= data.path.url %>"><%= data.path.file %>:<%= data.path.line %></a>]</span>
+                    <% } %>
+                    <a class="more-info rawlog-link" onclick="$('#<%= data.id %> .stacktrace').hide(); $('#<%= data.id %> .rawdata').toggle(); return false;" href="#">Raw Log</a>
+                    <% if (data.stacktrace) { %>
+                        <a class="more-info stacktrace-link" onclick="$('#<%= data.id %> .rawdata').hide(); $('#<%= data.id %> .stacktrace').toggle(); return false;" href="#">Stack Trace</a>
+                    <% } %>
+                    <span class="data"><%= data.data %></span>
+                    <div class="rawdata">
+                        <% renderTemplate('tpl_exportHelpLink'); %>
+                        <% renderTemplate('tpl_gistLink', { ns: data.ns, timestamp: (data.timestamp.getTime() / 1000), data: "$('#" + data.id + " .rawdata .container').text().trim()" }); %>
+                        <% renderTemplate('tpl_ircLink', { chan: '#sgtest', data: "$('#" + data.id + " .rawdata .container').text().trim()" }); %>
+                        <h1>Raw Log</h1>
+                        <div class="container">
+                            <%= data.rawdata %>
+                        </div>
+                    </div>
+                    <% if (data.stacktrace) { %>
+                        <div class="stacktrace">
+                            <% renderTemplate('tpl_exportHelpLink'); %>
+                            <% renderTemplate('tpl_gistLink', { ns: data.ns, timestamp: (data.timestamp.getTime() / 1000), data: "$('#" + data.id + " .stacktrace .raw').text().trim()" }); %>
+                            <% renderTemplate('tpl_ircLink', { chan: '#sgtest', data: "$('#" + data.id + " .stacktrace .raw').text().trim()" }); %>
+                            <h1>Stack Trace</h1>
+                            <div class="container">
+                                <ul>
+                                <% for (var i  = 0, len = data.stacktrace.length; i < len; i++) { %>
+                                    <li>
+                                        <span class="fileline">#<%= len - i - 1 %></span>
+                                        <%= data.stacktrace[i].call %>
+                                        <% if (data.stacktrace[i].file) { %>
+                                            [<a target="_blank" href="<%= data.stacktrace[i].url %>"><%= data.stacktrace[i].file %>:<%= data.stacktrace[i].line %></a>]
+                                            <a href="#" class="blameLink" onclick="Etsy.Page.showBlame(this, '<%= data.stacktrace[i].file %>', <%= data.stacktrace[i].line %>); return false;">?</a>
+                                        <% } %>
+                                    </li>
+                                <% } %>
+                                </ul>
+                            </div>
+                            <div class="raw"><%
+                                for (var i  = 0, len = data.stacktrace.length; i < len; i++) {
+                                    print('#', len - i - 1, ' ', data.stacktrace[i].call);
+                                    if (data.stacktrace[i].file) {
+                                        print(' ', data.stacktrace[i].file, ':', data.stacktrace[i].line);
+                                    }
+                                    if (i < len - 1) {
+                                        print("\n");
+                                    }
+                                }
+                            %></div>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <%= data.data %>
+                <% } %>
+            </li>
+        </script>
+
+    </body>
+
+</html>

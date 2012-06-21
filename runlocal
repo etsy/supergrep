@@ -1,0 +1,3 @@
+#!/bin/sh
+node stream.js localConfig.js
+

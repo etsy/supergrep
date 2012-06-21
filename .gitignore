@@ -1,0 +1,6 @@
+logs/
+repos/
+*.log
+*.old
+.DS_Store
+tmp/
