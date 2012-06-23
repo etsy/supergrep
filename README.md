@@ -1,6 +1,4 @@
 # Supergrep
-=rameter
-======
 
 Supergrep is a web based log streamer written in node
 
