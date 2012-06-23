@@ -1,0 +1,70 @@
+#!/bin/bash
+# supergrep initd script
+#
+# chkconfig: - 50 50
+# description: Startup script for supergrep
+#
+# processname: /usr/bin/node
+# pidfile: /var/run/stream.pid
+
+# source function library
+. /etc/init.d/functions
+
+OPTIONS="/path/to/supergrep/stream.js prodConfig.js"
+RETVAL=0
+prog="node stream.js prodConfig.js"
+pidfile="/var/run/stream.pid"
+
+start() {
+        echo -n $"Starting $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                daemon /usr/bin/node $OPTIONS &>/dev/null &
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/stream
+        fi;
+        echo 
+        return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                pkill -f "$OPTIONS"
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/stream
+        fi;
+        echo
+        return $RETVAL
+}
+
+restart(){
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+        ;;
+  status)
+        status -p $pidfile /usr/bin/node
+	RETVAL=$?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart}"
+	RETVAL=1
+esac
+
+exit $RETVAL
