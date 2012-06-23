@@ -1,4 +1,6 @@
 # Supergrep
+=rameter
+======
 
 Supergrep is a web based log streamer written in node
 
@@ -16,7 +18,7 @@ Run it:
 
 ## Installation
 
-After setting this up locally and seeing how it works you'll probably want to run in production. There are many [init](http://en.wikipedia.org/wiki/Init) daemons that you can run this under. We've included a simple init.d script to get you started. This is known to work under RedHat flavers of linux. You will have to edit the OPTIONS to specify the path where supergrep is installed.  It also sets a parameters for prodConfig.js that can take similar options as the localConfig.js that is included.
+After setting this up locally and seeing how it works you'll probably want to run in production. There are many [init](http://en.wikipedia.org/wiki/Init) daemons that you can run this under. We've included a simple init.d script to get you started. This is known to work under RedHat flavers of linux. You will have to edit the OPTIONS to specify the path where supergrep is installed.  It also sets a parameter for prodConfig.js that can take similar options as the localConfig.js that is included.
 
 ## Contributing
 
