@@ -1,6 +1,12 @@
 # Supergrep
 
-Supergrep is a web based log streamer written in node
+Supergrep is a web based log streamer written in node. It can be used quite nicely to surface new log lines (errors, etc.) that aren't normally expected.
+
+Essentially, having supergrep running in your browser while changes are being made allows for new/novel log patterns to show up, because under the hood, what we're really doing is:
+
+    $ tail -f {log filename} | grep -v {stuff you'd expect to see in log lines}
+
+It's intended on being a noise reduction and change-awareness tool.
 
 ## Getting Started
 
