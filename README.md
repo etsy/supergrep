@@ -14,7 +14,7 @@ You can edit variables in localConfig.js and also in static/js/supergrep.js. Mos
 
 Then you can install the node packages:
 
-    $ node install
+    $ npm install
 
 Run it:
 
