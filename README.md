@@ -16,9 +16,12 @@ Then you can install the node packages:
 
     $ npm install
 
-Run it:
+Run it from your install directory like:
 
-    $ runlocal
+    $ ./runlocal
+    
+Point your browser to localhost (default port:3000) and then click on "Guide" to get a tour.
+
 
 ## Installation
 
