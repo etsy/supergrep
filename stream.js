@@ -235,9 +235,9 @@ app.all('/v2/:respath?', function (req, res, next) {
 });
 app.use(express.staticCache());
 app.use(express.static(__dirname + STATIC_PATH));
-app.listen(config.port);
+server = app.listen(config.port);
 
-var websocket = socketio.listen(app);
+var websocket = socketio.listen(server);
 
 websocket.sockets.on('connection', function (client) {
     var self = client;
