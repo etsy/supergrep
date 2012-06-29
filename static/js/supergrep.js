@@ -426,7 +426,7 @@
             } else {
                 //Failed to recognize format so make a generic entry
                 //TODO: change the way this is rendered
-                data = data + (name ? '<span class="name">[' + name + ']</span> ' : '') + data;
+                data = data + (name ? '<span class="name">[' + name + ']</span> ' : '');
             }
 
             //Linkify any URLs floating around
