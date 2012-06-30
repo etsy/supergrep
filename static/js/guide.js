@@ -69,6 +69,7 @@ jQuery(function ($) {
         attachTo: '#classic-view',
         position: 7,
         buttons: [
+            { name: "previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_welcome');} },
             { name: "Next" }
             ],
         next: "guide_legend"
@@ -81,7 +82,9 @@ jQuery(function ($) {
         attachTo: '#legend-help',
         position: 6,
         buttons: [
-            { name: "Show Legend", onclick: function () { $('#legend-help').trigger('click'); guiders.next(); } }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_sgclassic');} },
+            { name: "Show Legend", onclick: function () { $('#legend-help').trigger('click'); guiders.next(); } },
+            { name: "Skip", onclick: function(){ guiders.hideAll(); guiders.show('guide_logsources');} }
             ],
         next: "guide_legendDetails"
     });
@@ -94,6 +97,7 @@ jQuery(function ($) {
         position: 9,
         width: 200,
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); $('#legend-dialog').dialog('close'); guiders.show('guide_legend');} },
             { name: "Next", onclick: function () { guiders.hideAll(); $('#legend-dialog').dialog('close'); guiders.next(); } }
             ],
         next: "guide_logsources"
@@ -106,6 +110,7 @@ jQuery(function ($) {
         attachTo: '#logsource-options',
         position: 5,
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_legend');} },
             { name: "Next" }
             ],
         next: "guide_viewoptions"
@@ -117,9 +122,19 @@ jQuery(function ($) {
         description: "These options control how the log entries are displayed to you.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+        },
         buttons: [
-            { name: "Next" }
-            ],
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_logsources');} },
+            { name: "Next" },
+            { name: "Skip", onclick: function(){ 
+                guiders.hideAll(); 
+                $('#max-entries').val(500).trigger('change'); 
+                Etsy.Supergrep.clearEntries(); 
+                guiders.show('guide_highlight');
+                }
+            }],
         next: "guide_viewoptions_autoscroll"
     });
 
@@ -130,7 +145,12 @@ jQuery(function ($) {
         description: "Checking this option will cause the view to jump to new log entries when they appear.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+            $("label[for='autoscroll']").css('background-color', 'yellow');
+        },
         buttons: [
+            { name: "Previous", onclick: function(){guiders.hideAll(); guiders.show('guide_viewoptions');} },
             { name: "Next" }
             ],
         next: "guide_viewoptions_wrap"
@@ -143,11 +163,13 @@ jQuery(function ($) {
         description: "When this option is checked, large log entries will take up more than one line on the screen. The upshot is that you can see the complete log on screen at all times.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+            $("label[for='wrap-lines']").css('background-color', 'yellow');
+        },
         buttons: [
-            { name: "Show me!", onclick: function () {
-                Etsy.Supergrep.writeLogEntries(genExampleData());
-                guiders.next();
-            } }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_viewoptions_autoscroll');}},
+            { name: "Show me!", onclick: function () { guiders.next();} }
             ],
         next: "guide_viewoptions_wrap_demo"
     });
@@ -157,7 +179,14 @@ jQuery(function ($) {
         description: "Try checking and unchecking the 'Wrap lines' option to see how it affects the display of log entries. Then, click 'Next' when you are ready.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            Etsy.Supergrep.clearEntries();
+            Etsy.Supergrep.writeLogEntries(genExampleData());
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+            $("label[for='wrap-lines']").css('background-color', 'yellow');
+        },
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_viewoptions_wrap');} },
             { name: "Next" }
             ],
         next: "guide_viewoptions_reverse"
@@ -169,7 +198,12 @@ jQuery(function ($) {
         description: "By default new log entries are added to the top of the screen. To have them appear at the bottom like they do in Supergrep classic, make sure this option is checked.<br/><br/>Try checking and unchecking the 'Reverse sort' options to see how it affects the display of log entries.<br/><br/>Click 'Next' when you are ready to continue.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+            $("label[for='sort-order']").css('background-color', 'yellow');
+        },
         buttons: [
+            { name: "Previous", onclick: function(){guiders.hideAll(); guiders.show('guide_viewoptions_wrap');}},
             { name: "Next" }
             ],
         next: "guide_viewoptions_max"
@@ -181,7 +215,12 @@ jQuery(function ($) {
         description: "This value is the maximum number of log entries that will be displayed. Once that limit is reached, older log entries are removed.<br/><br/>Try entering '3' into the box then press the 'tab' key to see how it affects the display of log entries.<br/><br/>Click 'Next' when you are ready to continue.",
         attachTo: '#view-options',
         position: 5,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+            $("label[for='max-entries']").css('background-color', 'yellow');
+        },
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_viewoptions_reverse');} },
             { name: "Next", onclick: function () { $('#max-entries').val(500).trigger('change'); Etsy.Supergrep.clearEntries(); guiders.next(); } }
             ],
         next: "guide_highlight"
@@ -193,8 +232,13 @@ jQuery(function ($) {
         description: "This field allows you to highlight log entries based on matching terms or a regex.",
         attachTo: '#highlight-options',
         position: 6,
+        onShow: function(){
+            $("label[for='autoscroll'], label[for='wrap-lines'], label[for='sort-order'], label[for='max-entries']").css('background','');
+        },
         buttons: [
-            { name: "Next" }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_viewoptions');} },
+            { name: "Next" },
+            { name: "Skip", onclick: function(){ guiders.hideAll(); guiders.show('guide_filter');} }
             ],
         next: "guide_highlight_help"
     });
@@ -206,7 +250,15 @@ jQuery(function ($) {
         attachTo: '#highlight-rule-help',
         position: 6,
         buttons: [
-            { name: "Next", onclick: function () { $('#highlight-rule-help').trigger('click'); guiders.next(); } }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_highlight');} },
+            { name: "Next", onclick: function () { $('#highlight-rule-help').trigger('click'); guiders.next(); }},
+            { name: "Skip", onclick: function(){
+                guiders.hideAll();
+                Etsy.Supergrep.writeLogEntries(genExampleData());
+                $('#highlight-log').val('debug, warning').trigger('change');
+                guiders.show('guide_highlight_example1');
+                } 
+            }          
             ],
         next: "guide_highlight_help_show"
     });
@@ -219,10 +271,16 @@ jQuery(function ($) {
         position: 9,
         width: 300,
         buttons: [
+            { name: "Previous", onclick: function(){ 
+                guiders.hideAll();
+                $('#rule-help-dialog').dialog('close');
+                $('#highlight-log').val('').trigger('change');
+                guiders.show('guide_highlight_help');
+                }
+            },
             { name: "Next", onclick: function () {
                 $('#rule-help-dialog').dialog('close');
                 Etsy.Supergrep.writeLogEntries(genExampleData());
-                $('#highlight-log').val('debug, warning').trigger('change');
                 guiders.next();
             } }
             ],
@@ -235,12 +293,18 @@ jQuery(function ($) {
         description: "Here we see what happens when we highlight using the keywords 'debug' and 'warning'.",
         attachTo: '#highlight-log',
         position: 10,
+        onShow: function(){
+            $('#rule-help-dialog').dialog('close');
+            $('#highlight-log').val('debug, warning').trigger('change');
+        },
         buttons: [
-            { name: "Next", onclick: function () {
-                $('#rule-help-dialog').dialog('close');
-                $('#highlight-log').val('/(debug|warning)/i').trigger('change');
-                guiders.next();
-            } }
+            { name: "Previous", onclick: function(){
+                guiders.hideAll(); 
+                Etsy.Supergrep.clearEntries();
+                guiders.show('guide_highlight_help');
+                } 
+            },
+            { name: "Next" }
             ],
         next: "guide_highlight_example2"
     });
@@ -251,12 +315,13 @@ jQuery(function ($) {
         description: "Here is the same rule expressed as a regex.",
         attachTo: '#highlight-log',
         position: 10,
+        onShow: function(){
+            $('#rule-help-dialog').dialog('close');
+            $('#highlight-log').val('/(debug|warning)/i').trigger('change');
+        },
         buttons: [
-            { name: "Next", onclick: function () {
-                $('#rule-help-dialog').dialog('close');
-                $('#highlight-log').val('').trigger('change');
-                guiders.next();
-            } }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_highlight_example1');} },
+            { name: "Next", onclick: function () { $('#highlight-log').val('').trigger('change'); guiders.next();} }
             ],
         next: "guide_filter"
     });
@@ -268,10 +333,9 @@ jQuery(function ($) {
         attachTo: '#filter-log',
         position: 10,
         buttons: [
-            { name: "Show me", onclick: function () {
-                $('#filter-log').val('errorhandler').trigger('change');
-                guiders.next();
-            } }
+            { name: "Previous", onclick: function(){ guiders.hideAll(); Etsy.Supergrep.clearEntries(); guiders.show('guide_highlight');} },
+            { name: "Show me", onclick: function () { guiders.next();} },
+            { name: "Skip", onclick: function(){ guiders.hideAll(); guiders.show('guide_clearlog');} }
             ],
         next: "guide_filter_example"
     });
@@ -282,7 +346,16 @@ jQuery(function ($) {
         description: "Here we are filtering any log entries that contain 'errorhandler' (case insensitive). Notice how some of the log entries are now gone.",
         attachTo: '#clear-field-filter',
         position: 10,
+        onShow: function(){
+            $('#filter-log').val('errorhandler').trigger('change');
+        },
         buttons: [
+            { name: "Previous", onclick: function(){ 
+                $('#filter-log').val('').trigger('change');
+                guiders.hideAll(); 
+                guiders.show('guide_filter');
+                } 
+            },
             { name: "Next" }
             ],
         next: "guide_filter_clear"
@@ -296,6 +369,7 @@ jQuery(function ($) {
         position: 5,
         offset: { top: 0, left: 35 },
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_filter');} },
             { name: "Next", onclick: function () {
                 $('#filter-log').val('').trigger('change');
                 guiders.next();
@@ -310,7 +384,17 @@ jQuery(function ($) {
         description: "If you ever need to clear the log entries, just click this button. Try it now!",
         attachTo: '#clear-log',
         position: 6,
+        onShow: function(){
+            Etsy.Supergrep.clearEntries();
+            Etsy.Supergrep.writeLogEntries(genExampleData());
+        },
         buttons: [
+            { name: "Previous", onclick: function(){ 
+                guiders.hideAll();
+                Etsy.Supergrep.clearEntries();
+                Etsy.Supergrep.writeLogEntries(genExampleData());
+                guiders.show('guide_filter_example');} 
+            },
             { name: "Next", onclick: function () { Etsy.Supergrep.clearEntries(); guiders.next(); } }
             ],
         next: "guide_intrologs"
@@ -322,6 +406,11 @@ jQuery(function ($) {
         description: "Next, you are going to be introduced to a few features on the log entries themselves and then you are done!",
         overlay: true,
         buttons: [
+            { name: "Previous", onclick: function(){ 
+                guiders.hideAll();
+                Etsy.Supergrep.clearEntries();
+                guiders.show('guide_clearlog');} 
+            },
             { name: "Next", onclick: function () {
                 $('#sort-order').attr('checked', false).trigger('change');
                 $('#highlight-log').val('').trigger('change');
@@ -341,11 +430,13 @@ jQuery(function ($) {
         attachTo: '.rawlog-link:first',
         position: 6,
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_intrologs');} },
             { name: "Next", onclick: function () {
                 var id = $('.rawlog-link:first').parent('li.log').attr('id');
                 $('#' + id + ' .rawdata').show();
                 guiders.next();
-            } }
+            } },
+            { name: "Skip", onclick: function(){ guiders.hideAll(); guiders.show('guide_stacktrace');} }
             ],
         next: "guide_rawlog_show"
     });
@@ -353,10 +444,16 @@ jQuery(function ($) {
     guiders.createGuider({
         id: "guide_rawlog_show",
         title: "Raw Logs",
-        description: "This is the raw log data, exactly is it was recorded.",
+        description: "This is the raw log data, exactly as is it was recorded.",
         attachTo: '.rawdata:first',
         position: 6,
         buttons: [
+            { name: "Previous", onclick: function(){ 
+                guiders.hideAll();
+                var id = $('.rawlog-link:first').parent('li.log').attr('id');
+                $('#' + id + ' .rawdata').hide();
+                guiders.show('guide_rawlog');} 
+            },
             { name: "Next", onclick: function () {
                 var id = $('.rawlog-link:first').parent('li.log').attr('id');
                 $('#' + id + ' .rawdata').hide();
@@ -373,11 +470,14 @@ jQuery(function ($) {
         attachTo: '.stacktrace-link:first',
         position: 6,
         buttons: [
-            { name: "Next", onclick: function () {
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_rawlog');} },
+            { name: "Next", onclick: function(){
                 var id = $('.stacktrace-link:first').parent('li.log').attr('id');
                 $('#' + id + ' .stacktrace').show();
                 guiders.next();
-            } }
+                }
+            },
+            { name: "Skip", onclick: function(){ guiders.hideAll(); guiders.show('guide_done');} }
             ],
         next: "guide_stacktrace_show"
     });
@@ -389,10 +489,13 @@ jQuery(function ($) {
         attachTo: '.stacktrace:first',
         position: 7,
         buttons: [
-            { name: "Next", onclick: function () {
-                var id = $('.rawlog-link:first').parent('li.log').attr('id');
-                guiders.next();
-            } }
+            { name: "Previous", onclick: function(){ 
+                guiders.hideAll();
+                var id = $('.stacktrace-link:first').parent('li.log').attr('id');
+                $('#' + id + ' .stacktrace').hide();
+                guiders.show('guide_stacktrace');} 
+            },
+            { name: "Next" }
             ],
         next: "guide_export"
     });
@@ -404,6 +507,7 @@ jQuery(function ($) {
         attachTo: '.stacktrace:first .gist:first',
         position: 5,
         buttons: [
+            { name: "Previous", onclick: function(){ guiders.hideAll(); guiders.show('guide_stacktrace_show');} },
             { name: "Next", onclick: function () {
                 Etsy.Supergrep.clearEntries();
                 guiders.next();
