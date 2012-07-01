@@ -8,6 +8,10 @@ Essentially, having supergrep running in your browser while changes are being ma
 
 It's intended on being a noise reduction and change-awareness tool.
 
+## Prerequisites
+
+In order to run supergrep, you need [NodeJS](http://nodejs.org/) and [npm](http://howtonode.org/introduction-to-npm) ( NodeJS package manager).
+
 ## Getting Started
 
 You can edit variables in localConfig.js and also in static/js/supergrep.js. Most of this should work out of the box but some of the cooler functionality is enabled by assuming certain pieces of data can be found in your logs.  You'll have to adjust the regexes to suit your logs.
