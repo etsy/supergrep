@@ -30,7 +30,10 @@ var cache = { js: {}, jsc: {}, less: {} };
     });
 
     // trap TERM signals and close all readers
-    process.on('SIGTERM', closeReaders)
+    process.on('SIGTERM', function() {
+        closeReaders();
+        process.exit(0);
+    });
 
 /* Misc helper funcs */
     function closeReaders() {
