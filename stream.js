@@ -29,7 +29,16 @@ var cache = { js: {}, jsc: {}, less: {} };
         logReaders[file.name] = new LogReader(file, config);
     });
 
+    // trap TERM signals and close all readers
+    process.on('SIGTERM', closeReaders)
+
 /* Misc helper funcs */
+    function closeReaders() {
+      for (var name in logReaders) {
+        logReaders[name].log.kill();
+      }
+    }
+
     function fileExists(path, cb) {
         fs.stat(path, function (err, stat) {
             cb(!err && stat.isFile());
