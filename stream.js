@@ -8,10 +8,6 @@ var socketio    = require('socket.io');
 var less        = require('less');
 var uglify      = require('uglify-js');
 var LogReader   = require('./lib/logreader');
-var http        = require('http');
-var logger      = require('morgan');
-var bodyParser  = require('body-parser');
-var errorhandler = require('errorhandler')
 
 var STATIC_PATH = '/static';
 
@@ -60,14 +56,13 @@ var cache = { js: {}, jsc: {}, less: {} };
         }
     }
 
-var app = express();
-var server = http.createServer(app);
+var app = express.createServer();
 //Allow JSONP support
 app.enable("jsonp callback");
-app.use(logger);
-app.use(bodyParser);
+app.use(express.logger());
+app.use(express.bodyParser());
 app.use(express.query());
-app.use(errorhandler({ dumpExceptions: true, showStack: true }));
+app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
 //IRCCat proxy
 app.post('/irccat', function (req, res, next) {
@@ -250,7 +245,7 @@ app.all('/v2/:respath?', function (req, res, next) {
         (qs.length ? '?' + qs.join('?') : '')
         );
 });
-// app.use(express.staticCache());
+app.use(express.staticCache());
 app.use(express.static(__dirname + STATIC_PATH));
 server = app.listen(config.port);
 
