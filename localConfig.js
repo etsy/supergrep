@@ -13,9 +13,9 @@ exports.config = {
         maxchars: 450
     },
     files: [
-        {
-            name: 'web',
-            path: ['/var/log/httpd/info.log', '/var/log/httpd/php.log']
+        // {
+            // name: 'web',
+            // path: ['/var/log/httpd/info.log', '/var/log/httpd/php.log']
             // you can also do this
             //            filter: function (line, config) {
             //                if (! line.match(config.noisyErrors)) {
@@ -27,6 +27,10 @@ exports.config = {
             //
             //  make sure to define below (in the config namespace):
             //    noisyErrors: new RegExp (/(something to ignore)/),
+        // },
+        {
+            name: 'web',
+            reader: 'kafkacat',
         },
         // add more files entries here if you want
         {
