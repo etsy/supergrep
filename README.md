@@ -23,13 +23,13 @@ Then you can install the node packages:
 Run it from your install directory like:
 
     $ ./runlocal
-    
+
 Point your browser to localhost (default port:3000) and then click on "Guide" to get a tour.
 
 
 ## Installation
 
-After setting this up locally and seeing how it works you'll probably want to run in production. There are many [init](http://en.wikipedia.org/wiki/Init) daemons that you can run this under. We've included a simple init.d script to get you started. This is known to work under RedHat flavers of linux. You will have to edit the OPTIONS to specify the path where supergrep is installed.  It also sets a parameter for prodConfig.js that can take similar options as the localConfig.js that is included.
+After setting this up locally and seeing how it works you'll probably want to run in production. There are many [init](http://en.wikipedia.org/wiki/Init) daemons that you can run this under. We've included a simple init.d script to get you started. This is known to work under RedHat flavors of linux. You will have to edit the OPTIONS to specify the path where supergrep is installed.  It also sets a parameter for prodConfig.js that can take similar options as the localConfig.js that is included.
 
 ## Log Format
 
