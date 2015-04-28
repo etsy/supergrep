@@ -4,3 +4,4 @@ repos/
 *.old
 .DS_Store
 tmp/
+node_modules/
