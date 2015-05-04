@@ -1,13 +1,16 @@
-var fs          = require('fs');
-var qs          = require('querystring');
-var net         = require('net');
-var path        = require('path');
-var exec        = require("child_process").exec;
-var express     = require('express');
-var socketio    = require('socket.io');
-var less        = require('less');
-var uglify      = require('uglify-js');
-var LogReader   = require('./lib/logreader');
+var fs              = require('fs');
+var qs              = require('querystring');
+var net             = require('net');
+var path            = require('path');
+var exec            = require("child_process").exec;
+var express         = require('express');
+var socketio        = require('socket.io');
+var morgan          = require('morgan');
+var bodyParser      = require('body-parser');
+var errorhandler    = require('errorhandler');
+var less            = require('less');
+var uglify          = require('uglify-js');
+var LogReader       = require('./lib/logreader');
 
 var STATIC_PATH = '/static';
 
@@ -56,13 +59,13 @@ var cache = { js: {}, jsc: {}, less: {} };
         }
     }
 
-var app = express.createServer();
+var app = express();
 //Allow JSONP support
 app.enable("jsonp callback");
-app.use(express.logger());
-app.use(express.bodyParser());
+app.use(morgan());
+app.use(bodyParser());
 app.use(express.query());
-app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+app.use(errorhandler({ dumpExceptions: true, showStack: true }));
 
 //IRCCat proxy
 app.post('/irccat', function (req, res, next) {
@@ -245,7 +248,7 @@ app.all('/v2/:respath?', function (req, res, next) {
         (qs.length ? '?' + qs.join('?') : '')
         );
 });
-app.use(express.staticCache());
+
 app.use(express.static(__dirname + STATIC_PATH));
 server = app.listen(config.port);
 
