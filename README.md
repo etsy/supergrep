@@ -8,6 +8,10 @@ Essentially, having supergrep running in your browser while changes are being ma
 
 It's intended on being a noise reduction and change-awareness tool.
 
+## This is an Archived Project
+
+Supergrep is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
+
 ## Prerequisites
 
 In order to run supergrep, you need [NodeJS](http://nodejs.org/) and [npm](http://howtonode.org/introduction-to-npm) ( NodeJS package manager).
