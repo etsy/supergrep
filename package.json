@@ -26,13 +26,16 @@
     }
 
   , "dependencies": {
-      "dateformat": ">=1.x"
-    , "less":       "1.1.x"
-    , "mime":       "1.2.x"
-    , "socket.io":  "0.8.x"
-    , "uglify-js":  "1.2.x"
-    , "validator":  "0.3.x"
-    , "express":    ">=2.5.x"
+      "body-parser":   "^1.5.2"
+    , "dateformat":    ">=1.x"
+    , "errorhandler":  "^1.1.1"
+    , "less":          "1.1.x"
+    , "mime":          "1.2.x"
+    , "morgan":        "^1.2.2"
+    , "socket.io":     "0.8.x"
+    , "uglify-js":     "1.2.x"
+    , "validator":     "0.3.x"
+    , "express":       ">=4.0.0"
   }
 
   , "engines": { "node": ">= 0.6.0" }
